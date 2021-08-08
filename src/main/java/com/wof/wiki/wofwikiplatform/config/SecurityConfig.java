@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
@@ -38,6 +39,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * 发者如需使用AuthenticationManager，则可以通过覆盖此方法，
+     * 将configure(AuthenticationManagerBuilder)方法构造的AuthenticationManager暴露为Bean。
+     */
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
     @Override
     //authenticationProvider可自定义密码匹配规则，是有自带的实现的，这只是一个接口
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -49,7 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                    .antMatchers().permitAll()
+                    .anyRequest().permitAll()
                     .antMatchers("/edit/**").hasRole("ADMIN")
                     .anyRequest().authenticated()
                 .and()
