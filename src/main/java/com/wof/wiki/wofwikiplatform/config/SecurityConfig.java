@@ -59,9 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                    .anyRequest().permitAll()
                     .antMatchers("/edit/**").hasRole("ADMIN")
-                    .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new LogFilter(), UsernamePasswordAuthenticationFilter.class)
                 .formLogin()
